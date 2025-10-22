@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { HC_UNIT_EDITIONS, getUnitImageUrl } from "@/lib/constants";
+import { HC_UNIT_EDITIONS, getUnitImageUrl, getCollectionIconUrl, fetchUnitFromAPI } from "@/lib/constants";
 import { z } from "zod";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle, Loader2 } from "lucide-react";
 
 const listingSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
@@ -28,9 +30,55 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [loading, setLoading] = useState(false);
+  const [fetchingUnit, setFetchingUnit] = useState(false);
+  const [unitError, setUnitError] = useState("");
+  const [previewUrl, setPreviewUrl] = useState("");
+  const [unitExists, setUnitExists] = useState(false);
+
+  useEffect(() => {
+    if (collection && unitNumber) {
+      fetchUnitData();
+    } else {
+      setName("");
+      setPreviewUrl("");
+      setUnitError("");
+      setUnitExists(false);
+    }
+  }, [collection, unitNumber]);
+
+  const fetchUnitData = async () => {
+    setFetchingUnit(true);
+    setUnitError("");
+    setUnitExists(false);
+    
+    try {
+      const data = await fetchUnitFromAPI(collection, unitNumber);
+      setName(data.name);
+      setPreviewUrl(getUnitImageUrl(collection, unitNumber));
+      setUnitExists(true);
+      setUnitError("");
+    } catch (error) {
+      setName("");
+      setPreviewUrl("");
+      setUnitExists(false);
+      setUnitError("Peça não encontrada. Verifique se a coleção e número estão corretos.");
+    } finally {
+      setFetchingUnit(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!unitExists) {
+      toast({
+        title: "Erro",
+        description: "Por favor, verifique se a peça existe antes de cadastrar",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -125,19 +173,6 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="name">Nome da Peça</Label>
-        <Input
-          id="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Ex: Superman"
-          required
-        />
-        <p className="text-xs text-muted-foreground">
-          Se a peça já existir, preencha com o mesmo nome
-        </p>
-      </div>
 
       <div className="space-y-2">
         <Label htmlFor="collection">Coleção</Label>
@@ -148,7 +183,17 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
           <SelectContent>
             {HC_UNIT_EDITIONS.map((edition) => (
               <SelectItem key={edition.value} value={edition.value}>
-                {edition.label}
+                <div className="flex items-center gap-2">
+                  <img 
+                    src={getCollectionIconUrl(edition.value)} 
+                    alt={edition.label}
+                    className="w-4 h-4"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                  {edition.label}
+                </div>
               </SelectItem>
             ))}
           </SelectContent>
@@ -163,11 +208,45 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
           onChange={(e) => setUnitNumber(e.target.value)}
           placeholder="Ex: 001 ou l001 ou 001b"
           required
+          disabled={!collection}
         />
         <p className="text-xs text-muted-foreground">
           Para Legacy use l001, para variantes use 001b
         </p>
       </div>
+
+      {fetchingUnit && (
+        <div className="flex items-center justify-center gap-2 text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          <span>Buscando peça...</span>
+        </div>
+      )}
+
+      {unitError && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{unitError}</AlertDescription>
+        </Alert>
+      )}
+
+      {unitExists && name && (
+        <div className="space-y-2">
+          <Label>Preview da Peça</Label>
+          <div className="rounded-lg border-2 border-border p-4 space-y-2 bg-card">
+            <p className="font-semibold text-foreground">{name}</p>
+            <div className="aspect-square max-w-xs mx-auto rounded-lg overflow-hidden border border-border">
+              <img
+                src={previewUrl}
+                alt={name}
+                className="w-full h-full object-contain bg-muted"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "/placeholder.svg";
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
@@ -196,7 +275,7 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
         </div>
       </div>
 
-      <Button type="submit" className="w-full hero-gradient" disabled={loading}>
+      <Button type="submit" className="w-full hero-gradient" disabled={loading || !unitExists || fetchingUnit}>
         {loading ? "Cadastrando..." : "Cadastrar Peça"}
       </Button>
     </form>

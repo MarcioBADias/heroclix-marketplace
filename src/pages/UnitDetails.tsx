@@ -7,7 +7,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, ExternalLink } from "lucide-react";
+import { getCollectionIconUrl, getCollectionLabel } from "@/lib/constants";
 
 interface Listing {
   id: string;
@@ -189,12 +190,30 @@ const UnitDetails = () => {
             </div>
 
             <div className="space-y-2">
-              <p className="text-muted-foreground">
-                <span className="font-semibold text-foreground">Coleção:</span> {unit.collection}
+              <p className="text-muted-foreground flex items-center gap-2">
+                <span className="font-semibold text-foreground">Coleção:</span> 
+                <img
+                  src={getCollectionIconUrl(unit.collection)}
+                  alt={unit.collection}
+                  className="w-5 h-5"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+                {getCollectionLabel(unit.collection)}
               </p>
               <p className="text-muted-foreground">
                 <span className="font-semibold text-foreground">Número:</span> {unit.unit_number}
               </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.open(`https://hcunits.net/units/${unit.collection}${unit.unit_number}/`, '_blank')}
+                className="mt-2"
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Ver no HCUnits
+              </Button>
             </div>
           </div>
         </div>

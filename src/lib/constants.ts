@@ -29,3 +29,25 @@ export const HC_UNIT_EDITIONS = [
 export const getUnitImageUrl = (collection: string, unitNumber: string) => {
   return `https://hcunits.net/static/images/set/${collection}/${unitNumber}.png`;
 };
+
+export const getCollectionIconUrl = (collection: string) => {
+  return `https://hcunits.net/static/images/set/${collection}/icon.svg`;
+};
+
+export const getCollectionLabel = (value: string) => {
+  const edition = HC_UNIT_EDITIONS.find(ed => ed.value === value);
+  return edition?.label || value;
+};
+
+export const fetchUnitFromAPI = async (collection: string, unitNumber: string) => {
+  try {
+    const response = await fetch(`https://hcunits.net/api/v1/units/${collection}${unitNumber}/`);
+    if (!response.ok) {
+      throw new Error('Unit not found');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

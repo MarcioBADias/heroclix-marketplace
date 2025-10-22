@@ -4,6 +4,8 @@ import Navbar from "@/components/Navbar";
 import UnitCard from "@/components/UnitCard";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { HC_UNIT_EDITIONS, getCollectionIconUrl } from "@/lib/constants";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface Unit {
   id: string;
@@ -19,6 +21,7 @@ interface Unit {
 const Index = () => {
   const [units, setUnits] = useState<Unit[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCollection, setSelectedCollection] = useState<string>("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -41,10 +44,12 @@ const Index = () => {
     }
   };
 
-  const filteredUnits = units.filter((unit) =>
-    unit.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    unit.collection.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredUnits = units.filter((unit) => {
+    const matchesSearch = unit.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      unit.collection.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCollection = !selectedCollection || unit.collection === selectedCollection;
+    return matchesSearch && matchesCollection;
+  });
 
   return (
     <div className="min-h-screen">
@@ -69,6 +74,51 @@ const Index = () => {
               className="pl-10"
             />
           </div>
+        </div>
+
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold mb-3 text-center">Filtrar por Coleção</h3>
+          <ScrollArea className="w-full whitespace-nowrap">
+            <div className="flex gap-4 pb-4 justify-center">
+              <button
+                onClick={() => setSelectedCollection("")}
+                className={`flex flex-col items-center gap-2 p-3 rounded-lg transition-all hover:scale-110 ${
+                  !selectedCollection 
+                    ? "bg-primary text-primary-foreground shadow-lg" 
+                    : "bg-card hover:bg-muted"
+                }`}
+              >
+                <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary">
+                  <Search className="w-6 h-6" />
+                </div>
+                <span className="text-xs font-medium">Todas</span>
+              </button>
+              {HC_UNIT_EDITIONS.map((edition) => (
+                <button
+                  key={edition.value}
+                  onClick={() => setSelectedCollection(edition.value === selectedCollection ? "" : edition.value)}
+                  className={`flex flex-col items-center gap-2 p-3 rounded-lg transition-all hover:scale-110 ${
+                    selectedCollection === edition.value 
+                      ? "bg-primary text-primary-foreground shadow-lg" 
+                      : "bg-card hover:bg-muted"
+                  }`}
+                >
+                  <div className="w-12 h-12 flex items-center justify-center rounded-full bg-muted">
+                    <img
+                      src={getCollectionIconUrl(edition.value)}
+                      alt={edition.label}
+                      className="w-8 h-8 object-contain"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/placeholder.svg";
+                      }}
+                    />
+                  </div>
+                  <span className="text-xs font-medium text-center max-w-[80px]">{edition.label}</span>
+                </button>
+              ))}
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
         </div>
 
         {loading ? (

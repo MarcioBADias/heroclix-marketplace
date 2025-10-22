@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, User, LogOut } from "lucide-react";
+import { ShoppingCart, User, LogOut, LayoutDashboard } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { User as SupabaseUser } from "@supabase/supabase-js";
+import { ThemeToggle } from "./ThemeToggle";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -35,21 +36,23 @@ const Navbar = () => {
           </h1>
         </Link>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
           {user ? (
             <>
-              <Button variant="ghost" size="icon" onClick={() => navigate("/cart")}>
+              <Button variant="outline" size="icon" onClick={() => navigate("/cart")}>
                 <ShoppingCart className="h-5 w-5" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")}>
-                <User className="h-5 w-5" />
+              <Button variant="outline" size="icon" onClick={() => navigate("/dashboard")}>
+                <LayoutDashboard className="h-5 w-5" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleLogout}>
+              <Button variant="outline" size="icon" onClick={handleLogout}>
                 <LogOut className="h-5 w-5" />
               </Button>
             </>
           ) : (
-            <Button onClick={() => navigate("/auth")}>
+            <Button onClick={() => navigate("/auth")} variant="outline">
+              <User className="h-4 w-4 mr-2" />
               Entrar
             </Button>
           )}
