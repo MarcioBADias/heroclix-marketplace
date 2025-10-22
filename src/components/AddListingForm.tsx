@@ -171,7 +171,7 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
         </p>
       </div>
 
-      {unitExists && name && (
+      {name && (
         <div className="space-y-2">
           <Label>Preview da Peça</Label>
           <div className="rounded-lg border-2 border-border p-4 space-y-2 bg-card">
@@ -184,6 +184,11 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = "/placeholder.svg";
                 }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="space-y-2">
         <Label htmlFor="name">Nome da Peça</Label>
@@ -226,7 +231,7 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
         </div>
       </div>
 
-      <Button type="submit" className="w-full hero-gradient" disabled={loading}>
+      <Button type="submit" className="w-full hero-gradient">
         {loading ? "Cadastrando..." : "Cadastrar Peça"}
       </Button>
     </form>
