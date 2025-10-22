@@ -171,8 +171,7 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
         </p>
       </div>
 
-      {name && (
-        <div className="space-y-2">
+      <div className="space-y-2">
           <Label>Preview da Peça</Label>
           <div className="rounded-lg border-2 border-border p-4 space-y-2 bg-card">
             <p className="font-semibold text-foreground">{name}</p>
@@ -188,7 +187,6 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
             </div>
           </div>
         </div>
-      )}
 
       <div className="space-y-2">
         <Label htmlFor="name">Nome da Peça</Label>
