@@ -171,6 +171,20 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
         </p>
       </div>
 
+      {unitExists && name && (
+        <div className="space-y-2">
+          <Label>Preview da Peça</Label>
+          <div className="rounded-lg border-2 border-border p-4 space-y-2 bg-card">
+            <p className="font-semibold text-foreground">{name}</p>
+            <div className="aspect-square max-w-xs mx-auto rounded-lg overflow-hidden border border-border">
+              <img
+                src={previewUrl}
+                alt={name}
+                className="w-full h-full object-contain bg-muted"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "/placeholder.svg";
+                }}
+
       <div className="space-y-2">
         <Label htmlFor="name">Nome da Peça</Label>
         <Input
@@ -212,7 +226,7 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
         </div>
       </div>
 
-      <Button type="submit" className="w-full hero-gradient" disabled={loading || !unitExists || fetchingUnit}>
+      <Button type="submit" className="w-full hero-gradient" disabled={loading}>
         {loading ? "Cadastrando..." : "Cadastrar Peça"}
       </Button>
     </form>
