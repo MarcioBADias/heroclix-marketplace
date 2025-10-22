@@ -33,6 +33,16 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
   const [previewUrl, setPreviewUrl] = useState("");
   const [unitExists, setUnitExists] = useState(false);
 
+  useEffect(() => {
+  if (collection && unitNumber) {
+    const url = getUnitImageUrl(collection, unitNumber);
+    setPreviewUrl(url);
+  } else {
+    setPreviewUrl("");
+  }
+}, [collection, unitNumber]);
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -171,22 +181,25 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
         </p>
       </div>
 
-      <div className="space-y-2">
-          <Label>Preview da Peça</Label>
-          <div className="rounded-lg border-2 border-border p-4 space-y-2 bg-card">
-            <p className="font-semibold text-foreground">{name}</p>
-            <div className="aspect-square max-w-xs mx-auto rounded-lg overflow-hidden border border-border">
-              <img
-                src={previewUrl}
-                alt={name}
-                className="w-full h-full object-contain bg-muted"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = "/placeholder.svg";
-                }}
-              />
-            </div>
-          </div>
-        </div>
+     {previewUrl && (
+  <div className="space-y-2">
+    <Label>Preview da Peça</Label>
+    <div className="rounded-lg border-2 border-border p-4 space-y-2 bg-card">
+      <p className="font-semibold text-foreground">{name}</p>
+      <div className="aspect-square max-w-xs mx-auto rounded-lg overflow-hidden border border-border">
+        <img
+          src={previewUrl}
+          alt={name}
+          className="w-full h-full object-contain bg-muted"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = "/placeholder.svg";
+          }}
+        />
+      </div>
+    </div>
+  </div>
+)}
+
 
       <div className="space-y-2">
         <Label htmlFor="name">Nome da Peça</Label>
