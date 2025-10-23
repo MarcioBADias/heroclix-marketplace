@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import UnitCard from "@/components/UnitCard";
+import HeroCarousel from "@/components/HeroCarousel";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { HC_UNIT_EDITIONS, getCollectionIconUrl } from "@/lib/constants";
@@ -56,6 +57,8 @@ const Index = () => {
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
+        <HeroCarousel />
+        
         <div className="mb-8 space-y-4">
           <h2 className="text-4xl font-bold text-center bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
             Marketplace de Heroclix

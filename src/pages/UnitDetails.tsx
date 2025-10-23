@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { ShoppingCart, ExternalLink } from "lucide-react";
+import { ShoppingCart, ExternalLink, ArrowLeft, Zap } from "lucide-react";
 import { getCollectionIconUrl, getCollectionLabel } from "@/lib/constants";
 
 interface Listing {
@@ -127,6 +127,12 @@ const UnitDetails = () => {
     }
   };
 
+  const handleBuyCheapest = async () => {
+    if (listings.length === 0) return;
+    const cheapestListing = listings[0];
+    await handleAddToCart(cheapestListing.id);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen">
@@ -154,6 +160,15 @@ const UnitDetails = () => {
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
+        <Button 
+          variant="outline" 
+          onClick={() => navigate("/")}
+          className="mb-4"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Voltar
+        </Button>
+        
         <div className="grid md:grid-cols-2 gap-8 mb-8">
           <div className="aspect-square rounded-lg overflow-hidden card-gradient card-shadow border-2 border-border">
             <img
@@ -173,21 +188,32 @@ const UnitDetails = () => {
             
             <div className="flex gap-2 flex-wrap">
               {unit.min_price && (
-                <Badge variant="outline" className="text-sm bg-primary/10 border-primary text-primary">
+                <Badge variant="outline" className="text-sm bg-green-500/20 border-green-500 text-green-700 dark:text-green-400">
                   Mínimo: R$ {unit.min_price.toFixed(2)}
                 </Badge>
               )}
               {unit.avg_price && (
-                <Badge variant="outline" className="text-sm bg-accent/10 border-accent text-accent-foreground">
+                <Badge variant="outline" className="text-sm bg-blue-500/20 border-blue-500 text-blue-700 dark:text-blue-400">
                   Médio: R$ {unit.avg_price.toFixed(2)}
                 </Badge>
               )}
               {unit.max_price && (
-                <Badge variant="outline" className="text-sm bg-secondary/10 border-secondary text-secondary">
+                <Badge variant="outline" className="text-sm bg-red-500/20 border-red-500 text-red-700 dark:text-red-400">
                   Máximo: R$ {unit.max_price.toFixed(2)}
                 </Badge>
               )}
             </div>
+
+            {listings.length > 0 && (
+              <Button
+                onClick={handleBuyCheapest}
+                className="w-full hero-gradient"
+                size="lg"
+              >
+                <Zap className="h-5 w-5 mr-2" />
+                Comprar Mais Barato - R$ {listings[0].price.toFixed(2)}
+              </Button>
+            )}
 
             <div className="space-y-2">
               <p className="text-muted-foreground flex items-center gap-2">

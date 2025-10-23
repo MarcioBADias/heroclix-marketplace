@@ -9,6 +9,7 @@ import { Plus } from "lucide-react";
 import AddListingForm from "@/components/AddListingForm";
 import MyListings from "@/components/MyListings";
 import PendingSales from "@/components/PendingSales";
+import SalesHistory from "@/components/SalesHistory";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -52,9 +53,10 @@ const Dashboard = () => {
         </div>
 
         <Tabs defaultValue="listings" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 max-w-md">
+          <TabsList className="grid w-full grid-cols-3 max-w-2xl">
             <TabsTrigger value="listings">Minhas Peças</TabsTrigger>
             <TabsTrigger value="pending">Vendas Pendentes</TabsTrigger>
+            <TabsTrigger value="history">Histórico</TabsTrigger>
           </TabsList>
 
           <TabsContent value="listings" className="space-y-4">
@@ -85,6 +87,17 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <PendingSales />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="history">
+            <Card className="card-gradient border-2 border-border">
+              <CardHeader>
+                <CardTitle>Histórico de Vendas e Compras</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <SalesHistory />
               </CardContent>
             </Card>
           </TabsContent>

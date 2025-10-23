@@ -37,17 +37,17 @@ const UnitCard = ({ id, name, imageUrl, minPrice, avgPrice, maxPrice }: UnitCard
         <h3 className="font-bold text-lg line-clamp-2 text-foreground">{name}</h3>
         <div className="flex gap-2 w-full flex-wrap">
           {minPrice && (
-            <Badge variant="outline" className="text-xs bg-primary/10 border-primary text-primary">
+            <Badge variant="outline" className="text-xs bg-green-500/20 border-green-500 text-green-700 dark:text-green-400">
               Min: R$ {minPrice.toFixed(2)}
             </Badge>
           )}
           {avgPrice && (
-            <Badge variant="outline" className="text-xs bg-accent/10 border-accent text-accent-foreground">
+            <Badge variant="outline" className="text-xs bg-blue-500/20 border-blue-500 text-blue-700 dark:text-blue-400">
               Méd: R$ {avgPrice.toFixed(2)}
             </Badge>
           )}
           {maxPrice && (
-            <Badge variant="outline" className="text-xs bg-secondary/10 border-secondary text-secondary">
+            <Badge variant="outline" className="text-xs bg-red-500/20 border-red-500 text-red-700 dark:text-red-400">
               Max: R$ {maxPrice.toFixed(2)}
             </Badge>
           )}

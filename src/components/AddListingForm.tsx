@@ -5,10 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { HC_UNIT_EDITIONS, getUnitImageUrl, getCollectionIconUrl } from "@/lib/constants";
+import { HC_UNIT_EDITIONS, getUnitImageUrl, getCollectionIconUrl, fetchUnitFromAPI } from "@/lib/constants";
 import { z } from "zod";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, Loader2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const listingSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
@@ -32,15 +37,63 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
   const [loading, setLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState("");
   const [unitExists, setUnitExists] = useState(false);
+  const [fetchingUnit, setFetchingUnit] = useState(false);
+  const [unitError, setUnitError] = useState("");
+  const [marketPrices, setMarketPrices] = useState<{min: number | null, avg: number | null, max: number | null}>({min: null, avg: null, max: null});
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-  if (collection && unitNumber) {
-    const url = getUnitImageUrl(collection, unitNumber);
-    setPreviewUrl(url);
-  } else {
-    setPreviewUrl("");
-  }
-}, [collection, unitNumber]);
+    const fetchUnitData = async () => {
+      if (collection && unitNumber) {
+        setFetchingUnit(true);
+        setUnitError("");
+        setUnitExists(false);
+        const url = getUnitImageUrl(collection, unitNumber);
+        setPreviewUrl(url);
+
+        try {
+          // Fetch from API
+          const apiData = await fetchUnitFromAPI(collection, unitNumber);
+          if (apiData && apiData.name) {
+            setName(apiData.name);
+            setUnitExists(true);
+            setUnitError("");
+            
+            // Check if unit already exists in database
+            const { data: existingUnit } = await supabase
+              .from("units")
+              .select("min_price, avg_price, max_price")
+              .eq("collection", collection)
+              .eq("unit_number", unitNumber)
+              .maybeSingle();
+            
+            if (existingUnit) {
+              setMarketPrices({
+                min: existingUnit.min_price,
+                avg: existingUnit.avg_price,
+                max: existingUnit.max_price
+              });
+            } else {
+              setMarketPrices({min: null, avg: null, max: null});
+            }
+          }
+        } catch (error) {
+          setUnitError("Numeração incorreta. Verifique o número da unidade.");
+          setUnitExists(false);
+          setName("");
+          setMarketPrices({min: null, avg: null, max: null});
+        } finally {
+          setFetchingUnit(false);
+        }
+      } else {
+        setPreviewUrl("");
+        setUnitExists(false);
+        setMarketPrices({min: null, avg: null, max: null});
+      }
+    };
+
+    fetchUnitData();
+  }, [collection, unitNumber]);
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -57,6 +110,10 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
       };
 
       listingSchema.parse(data);
+
+      if (!unitExists) {
+        throw new Error("Por favor, verifique a coleção e número da unidade antes de cadastrar.");
+      }
 
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Usuário não autenticado");
@@ -142,28 +199,57 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
 
       <div className="space-y-2">
         <Label htmlFor="collection">Coleção</Label>
-        <Select value={collection} onValueChange={setCollection} required>
-          <SelectTrigger>
-            <SelectValue placeholder="Selecione a coleção" />
-          </SelectTrigger>
-          <SelectContent>
-            {HC_UNIT_EDITIONS.map((edition) => (
-              <SelectItem key={edition.value} value={edition.value}>
-                <div className="flex items-center gap-2">
-                  <img 
-                    src={getCollectionIconUrl(edition.value)} 
-                    alt={edition.label}
-                    className="w-4 h-4"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
-                    }}
-                  />
-                  {edition.label}
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="w-full justify-between"
+            >
+              {collection
+                ? HC_UNIT_EDITIONS.find((edition) => edition.value === collection)?.label
+                : "Selecione ou busque a coleção..."}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-full p-0">
+            <Command>
+              <CommandInput placeholder="Buscar coleção..." />
+              <CommandList>
+                <CommandEmpty>Nenhuma coleção encontrada.</CommandEmpty>
+                <CommandGroup>
+                  {HC_UNIT_EDITIONS.map((edition) => (
+                    <CommandItem
+                      key={edition.value}
+                      value={edition.label}
+                      onSelect={() => {
+                        setCollection(edition.value);
+                        setOpen(false);
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          collection === edition.value ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      <img 
+                        src={getCollectionIconUrl(edition.value)} 
+                        alt={edition.label}
+                        className="w-4 h-4 mr-2"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                      {edition.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
       </div>
 
       <div className="space-y-2">
@@ -181,24 +267,58 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
         </p>
       </div>
 
-     {previewUrl && (
-  <div className="space-y-2">
-    <Label>Preview da Peça</Label>
-    <div className="rounded-lg border-2 border-border p-4 space-y-2 bg-card">
-      <p className="font-semibold text-foreground">{name}</p>
-      <div className="aspect-square max-w-xs mx-auto rounded-lg overflow-hidden border border-border">
-        <img
-          src={previewUrl}
-          alt={name}
-          className="w-full h-full object-contain bg-muted"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = "/placeholder.svg";
-          }}
-        />
-      </div>
-    </div>
-  </div>
-)}
+      {fetchingUnit && (
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          <span className="text-sm">Buscando informações da peça...</span>
+        </div>
+      )}
+
+      {unitError && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{unitError}</AlertDescription>
+        </Alert>
+      )}
+
+      {unitExists && previewUrl && (
+        <div className="space-y-2">
+          <Label>Preview da Peça</Label>
+          <div className="rounded-lg border-2 border-border p-4 space-y-2 bg-card">
+            <p className="font-semibold text-foreground">{name}</p>
+            {(marketPrices.min || marketPrices.avg || marketPrices.max) && (
+              <div className="flex gap-2 flex-wrap text-xs">
+                <span className="text-muted-foreground">Preços atuais no mercado:</span>
+                {marketPrices.min && (
+                  <Badge variant="outline" className="bg-green-500/20 border-green-500 text-green-700 dark:text-green-400">
+                    Min: R$ {marketPrices.min.toFixed(2)}
+                  </Badge>
+                )}
+                {marketPrices.avg && (
+                  <Badge variant="outline" className="bg-blue-500/20 border-blue-500 text-blue-700 dark:text-blue-400">
+                    Méd: R$ {marketPrices.avg.toFixed(2)}
+                  </Badge>
+                )}
+                {marketPrices.max && (
+                  <Badge variant="outline" className="bg-red-500/20 border-red-500 text-red-700 dark:text-red-400">
+                    Max: R$ {marketPrices.max.toFixed(2)}
+                  </Badge>
+                )}
+              </div>
+            )}
+            <div className="aspect-square max-w-xs mx-auto rounded-lg overflow-hidden border border-border">
+              <img
+                src={previewUrl}
+                alt={name}
+                className="w-full h-full object-contain bg-muted"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "/placeholder.svg";
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
 
       <div className="space-y-2">
@@ -242,7 +362,7 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
         </div>
       </div>
 
-      <Button type="submit" className="w-full hero-gradient">
+      <Button type="submit" className="w-full hero-gradient" disabled={loading || !unitExists}>
         {loading ? "Cadastrando..." : "Cadastrar Peça"}
       </Button>
     </form>
