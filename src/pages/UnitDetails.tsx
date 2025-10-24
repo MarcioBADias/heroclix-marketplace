@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { ShoppingCart, ExternalLink, ArrowLeft, Zap } from "lucide-react";
-import { getCollectionIconUrl, getCollectionLabel } from "@/lib/constants";
+import { getCollectionIconUrl, getCollectionLabel, getUnitImageUrl } from "@/lib/constants";
 
 interface Listing {
   id: string;
@@ -172,7 +172,7 @@ const UnitDetails = () => {
         <div className="grid md:grid-cols-2 gap-8 mb-8">
           <div className="aspect-square rounded-lg overflow-hidden card-gradient card-shadow border-2 border-border">
             <img
-              src={unit.image_url}
+              src={getUnitImageUrl(unit.collection, unit.unit_number)}
               alt={unit.name}
               className="w-full h-full object-cover"
               onError={(e) => {

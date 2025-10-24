@@ -54,7 +54,7 @@ const Dashboard = () => {
 
         <Tabs defaultValue="listings" className="w-full">
           <TabsList className="grid w-full grid-cols-3 max-w-2xl">
-            <TabsTrigger value="listings">Minhas Peças</TabsTrigger>
+            <TabsTrigger value="listings">Meus Anuncios</TabsTrigger>
             <TabsTrigger value="pending">Vendas Pendentes</TabsTrigger>
             <TabsTrigger value="history">Histórico</TabsTrigger>
           </TabsList>
@@ -63,7 +63,7 @@ const Dashboard = () => {
             <Card className="card-gradient border-2 border-border">
               <CardHeader>
                 <div className="flex justify-between items-center">
-                  <CardTitle>Peças à Venda</CardTitle>
+                  <CardTitle>Anuncios abertos</CardTitle>
                   <Button onClick={() => setShowAddForm(!showAddForm)} className="hero-gradient">
                     <Plus className="h-4 w-4 mr-2" />
                     {showAddForm ? "Cancelar" : "Nova Peça"}

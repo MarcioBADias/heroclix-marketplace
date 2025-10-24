@@ -5,7 +5,7 @@ import UnitCard from "@/components/UnitCard";
 import HeroCarousel from "@/components/HeroCarousel";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { HC_UNIT_EDITIONS, getCollectionIconUrl } from "@/lib/constants";
+import { HC_UNIT_EDITIONS, getUnitImageUrl, getCollectionIconUrl } from "@/lib/constants";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface Unit {
@@ -142,7 +142,7 @@ const Index = () => {
                 name={unit.name}
                 collection={unit.collection}
                 unitNumber={unit.unit_number}
-                imageUrl={unit.image_url}
+                imageUrl={getUnitImageUrl(unit.collection, unit.unit_number)}
                 minPrice={unit.min_price}
                 avgPrice={unit.avg_price}
                 maxPrice={unit.max_price}

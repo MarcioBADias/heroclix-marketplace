@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Trash2, Edit } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { getUnitImageUrl } from "@/lib/constants";
 
 interface Listing {
   id: string;
@@ -14,6 +15,7 @@ interface Listing {
     name: string;
     collection: string;
     image_url: string;
+    unit_number: string;
   };
 }
 
@@ -41,7 +43,7 @@ const MyListings = () => {
           price,
           quantity,
           available_quantity,
-          unit:units(name, collection, image_url)
+          unit:units(name, collection, image_url, unit_number)
         `)
         .eq("seller_id", user.id)
         .order("created_at", { ascending: false });
@@ -121,7 +123,7 @@ const MyListings = () => {
           className="flex gap-4 p-4 rounded-lg bg-muted/30 border border-border"
         >
           <img
-            src={listing.unit.image_url}
+            src={getUnitImageUrl(listing.unit.collection, listing.unit.unit_number)}
             alt={listing.unit.name}
             className="w-20 h-20 object-cover rounded"
             onError={(e) => {

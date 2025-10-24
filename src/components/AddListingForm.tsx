@@ -36,8 +36,6 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
   const [quantity, setQuantity] = useState("");
   const [loading, setLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState("");
-  const [unitExists, setUnitExists] = useState(false);
-  const [unitError, setUnitError] = useState("");
   const [marketPrices, setMarketPrices] = useState<{min: number | null, avg: number | null, max: number | null}>({min: null, avg: null, max: null});
   const [open, setOpen] = useState(false);
 
@@ -65,10 +63,6 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
       };
 
       listingSchema.parse(data);
-
-      if (!unitExists) {
-        throw new Error("Por favor, verifique a coleção e número da unidade antes de cadastrar.");
-      }
 
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Usuário não autenticado");
@@ -283,7 +277,7 @@ const AddListingForm = ({ onSuccess }: AddListingFormProps) => {
         </div>
       </div>
 
-      <Button type="submit" className="w-full hero-gradient" disabled={loading || !unitExists}>
+      <Button type="submit" className="w-full hero-gradient" disabled={loading}>
         {loading ? "Cadastrando..." : "Cadastrar Peça"}
       </Button>
     </form>

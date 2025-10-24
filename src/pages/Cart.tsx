@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Trash2, ShoppingBag } from "lucide-react";
+import { getUnitImageUrl } from "@/lib/constants";
 
 interface CartItem {
   id: string;
@@ -23,6 +24,7 @@ interface CartItem {
       name: string;
       collection: string;
       image_url: string;
+      number: string;
     };
   };
 }
@@ -58,7 +60,7 @@ const Cart = () => {
             price,
             available_quantity,
             seller:profiles(id, username, whatsapp),
-            unit:units(name, collection, image_url)
+            unit:units(name, collection, image_url, unit_number)
           )
         `);
 
@@ -197,7 +199,7 @@ const Cart = () => {
                         className="flex gap-4 p-4 rounded-lg bg-muted/30 border border-border"
                       >
                         <img
-                          src={item.listing.unit.image_url}
+                          src={getUnitImageUrl(item.listing.unit.collection, item.listing.unit.unit_number)}
                           alt={item.listing.unit.name}
                           className="w-20 h-20 object-cover rounded"
                           onError={(e) => {
