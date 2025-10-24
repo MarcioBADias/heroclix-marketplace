@@ -57,7 +57,6 @@ const Index = () => {
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
-        <HeroCarousel />
         
         <div className="mb-8 space-y-4">
           <h2 className="text-4xl font-bold text-center bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
@@ -67,6 +66,8 @@ const Index = () => {
             Encontre e compre suas peças favoritas de Heroclix diretamente de outros colecionadores
           </p>
           
+            <HeroCarousel />
+            
           <div className="max-w-md mx-auto relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
             <Input

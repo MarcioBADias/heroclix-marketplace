@@ -5,7 +5,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import banner1 from "@/assets/banner1.png";
+import bannerArena from "@/assets/bannerArena.png";
 import banner2 from "@/assets/banner2.png";
 import Autoplay from "embla-carousel-autoplay";
 
@@ -26,16 +26,16 @@ const HeroCarousel = () => {
       >
         <CarouselContent>
           <CarouselItem>
-            <div className="relative aspect-[2/1] w-full overflow-hidden rounded-lg">
+            <div className="relative w-full overflow-hidden rounded-lg">
               <img
-                src={banner1}
+                src={bannerArena}
                 alt="Arena Heroclix"
                 className="w-full h-full object-cover"
               />
             </div>
           </CarouselItem>
           <CarouselItem>
-            <div className="relative aspect-[2/1] w-full overflow-hidden rounded-lg">
+            <div className="relative w-full overflow-hidden rounded-lg">
               <img
                 src={banner2}
                 alt="Campeonato Nacional de Heroclix"
