@@ -6,9 +6,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { ThemeToggle } from "./ThemeToggle";
+import { useTheme } from "next-themes";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [cartItemsCount, setCartItemsCount] = useState(0);
 
@@ -53,9 +55,7 @@ const Navbar = () => {
     <nav className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-            Heroclix Marketplace
-          </h1>
+          <img src={`/${theme === "dark" ? "LogoHcMarketplace_dark" : "LogoHcMarketplace_light"}.png`} alt="Heroclix Marketplace Logo" className="h-20 w-300" />
         </Link>
 
         <div className="flex items-center gap-2">
