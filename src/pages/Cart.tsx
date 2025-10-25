@@ -24,7 +24,7 @@ interface CartItem {
       name: string;
       collection: string;
       image_url: string;
-      number: string;
+      unit_number: string;
     };
   };
 }
@@ -121,7 +121,7 @@ const Cart = () => {
     const whatsappUrl = `https://wa.me/55${seller.whatsapp}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
 
-    // Create pending sales
+    // Create pending sales and remove from cart
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -134,9 +134,20 @@ const Cart = () => {
           quantity: item.quantity,
           price: item.listing.price,
         });
+        
+        // Remove item from cart
+        await supabase.from("cart_items").delete().eq("id", item.id);
       }
+      
+      toast({ title: "Pedido enviado! Itens removidos do carrinho." });
+      await fetchCart();
     } catch (error) {
       console.error("Error creating pending sales:", error);
+      toast({
+        title: "Erro ao processar pedido",
+        description: "Tente novamente",
+        variant: "destructive",
+      });
     }
   };
 

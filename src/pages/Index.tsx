@@ -17,6 +17,7 @@ interface Unit {
   min_price: number | null;
   avg_price: number | null;
   max_price: number | null;
+  listings?: Array<{ available_quantity: number }>;
 }
 
 const Index = () => {
@@ -33,7 +34,10 @@ const Index = () => {
     try {
       const { data, error } = await supabase
         .from("units")
-        .select("*")
+        .select(`
+          *,
+          listings(available_quantity)
+        `)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -142,11 +146,12 @@ const Index = () => {
                 id={unit.id}
                 name={unit.name}
                 collection={unit.collection}
-                unitNumber={unit.unit_number}
-                imageUrl={getUnitImageUrl(unit.collection, unit.unit_number)}
-                minPrice={unit.min_price}
-                avgPrice={unit.avg_price}
-                maxPrice={unit.max_price}
+            unitNumber={unit.unit_number}
+            imageUrl={getUnitImageUrl(unit.collection, unit.unit_number)}
+            minPrice={unit.min_price}
+            avgPrice={unit.avg_price}
+            maxPrice={unit.max_price}
+            hasAvailableListings={unit.listings?.some((l: any) => l.available_quantity > 0) || false}
               />
             ))}
           </div>
