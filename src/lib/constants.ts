@@ -24,6 +24,22 @@ export const HC_UNIT_EDITIONS = [
   { value: 'dicn', label: 'DC Iconix' },
   { value: 'micn', label: 'Marvel Iconix' },
   { value: 'wk', label: 'Standard Game Pieces' },
+  { value: 'dwx', label: 'Deadpool Weapon X' },
+  { value: 'hgpc2', label: 'Hellfire Gala 2' },
+  { value: 'msnp', label: 'Marvel Studio Next Phase' },
+  { value: 'gotghc', label: 'Guardians of the galaxy Holiday' },
+  { value: 'wov', label: 'Wheels of Vegence' },
+  { value: 'not', label: 'Notorious' },
+  { value: 'av60', label: 'Avengers 60th' },
+  { value: 'smba', label: 'Spider-Man: Beyond Amazing' },
+  { value: 'btu', label: 'Batman Team-Up' },
+  { value: 'av4e', label: 'Avengers Forever' },
+  { value: 'hgpc', label: 'Hellfire Gala' },
+  { value: 'xmxssop', label: 'X-men: X of Sword OP' },
+  { value: 'xmxs', label: 'X-men: X of Sword' },
+  { value: 'msdp', label: 'Marvel Disney Plus' },
+  { value: 'wotr', label: 'Avengers: War of The Realms' },
+  { value: 'ffwotr', label: 'Fast Forces: Avengers: War of The Realms' },
 ];
 
 export const getUnitImageUrl = (collection: string, unitNumber: string) => {
