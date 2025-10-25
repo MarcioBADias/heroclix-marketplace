@@ -184,13 +184,6 @@ const UnitCard = ({
                 <ShoppingCart className="h-4 w-4 mr-2" />
                 Comprar Mais Barato
               </Button>
-              <Button
-                onClick={() => navigate(`/unit/${id}`)}
-                variant="outline"
-                size="sm"
-              >
-                Saber Mais
-              </Button>
             </div>
           </div>
         </div>
