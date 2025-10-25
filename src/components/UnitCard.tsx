@@ -135,9 +135,6 @@ const UnitCard = ({
             className="cursor-pointer"
             onClick={() => navigate(`/unit/${id}`)}
           >
-            <h3 className="font-bold text-lg line-clamp-1 group-hover:text-primary transition-colors">
-              {name}
-            </h3>
             
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <img 
@@ -145,7 +142,9 @@ const UnitCard = ({
                 alt={collection}
                 className="w-4 h-4"
               />
-              <span>{collection}</span>
+            <h3 className="font-bold text-lg line-clamp-1 group-hover:text-primary transition-colors">
+              {name}
+            </h3>
             </div>
           </div>
 
@@ -174,7 +173,10 @@ const UnitCard = ({
               )}
             </div>
 
-            <div className="flex gap-2">
+          </div>
+        </div>
+      </div>
+            <div className="flex p-2 pt-0 gap-2 ">
               <Button
                 onClick={handleAddToCart}
                 disabled={!hasAvailableListings}
@@ -185,9 +187,6 @@ const UnitCard = ({
                 Comprar Mais Barato
               </Button>
             </div>
-          </div>
-        </div>
-      </div>
     </Card>
   );
 };
