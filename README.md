@@ -1,6 +1,6 @@
-![Screenshot do Heroclix Marketplace](./public/printPage.png)
-
 # 🎲 Heroclix Marketplace
+
+![Screenshot do Heroclix Marketplace](./public/printPage.png)
 
 O **Heroclix Marketplace** é a sua plataforma definitiva para comprar e vender miniaturas de Heroclix. Conecte-se com outros colecionadores, encontre peças raras, e gerencie seus anúncios e vendas de forma eficiente.
 
