@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ const UnitCard = ({
 }: UnitCardProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [isAdding, setIsAdding] = useState(false);
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -103,7 +105,13 @@ const UnitCard = ({
         });
       }
 
+      setIsAdding(true);
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
       toast({ title: "Adicionado ao carrinho!" });
+      
+      setTimeout(() => {
+        setIsAdding(false);
+      }, 2000);
     } catch (error: any) {
       toast({
         title: "Erro",
@@ -179,12 +187,12 @@ const UnitCard = ({
             <div className="flex p-2 pt-0 gap-2 ">
               <Button
                 onClick={handleAddToCart}
-                disabled={!hasAvailableListings}
-                className="flex-1 hero-gradient"
+                disabled={!hasAvailableListings || isAdding}
+                className={isAdding ? "flex-1 bg-emerald-500 hover:bg-emerald-600" : "flex-1 hero-gradient"}
                 size="sm"
               >
                 <ShoppingCart className="h-4 w-4 mr-2" />
-                Comprar Mais Barato
+                {isAdding ? "Adicionado ao Carrinho!" : "Comprar Mais Barato"}
               </Button>
             </div>
     </Card>

@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, LogOut, User, LayoutDashboard } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
+import { NotificationBell } from "./NotificationBell";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -66,7 +67,18 @@ const Navbar = () => {
       }
     });
 
-    return () => subscription.unsubscribe();
+    const handleCartUpdate = () => {
+      supabase.auth.getUser().then(({ data: { user } }) => {
+        if (user) fetchCartCount(user.id);
+      });
+    };
+
+    window.addEventListener('cartUpdated', handleCartUpdate);
+
+    return () => {
+      subscription.unsubscribe();
+      window.removeEventListener('cartUpdated', handleCartUpdate);
+    };
   }, []);
 
   const handleLogout = async () => {
@@ -87,6 +99,7 @@ const Navbar = () => {
 
         <div className="flex items-center gap-3">
           <ThemeToggle />
+          {user && <NotificationBell />}
           
           {user ? (
             <>
