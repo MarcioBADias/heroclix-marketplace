@@ -1,73 +1,67 @@
-# Welcome to your Lovable project
+![Screenshot do Heroclix Marketplace](image_3f3105.jpg)
 
-## Project info
+# 🎲 Heroclix Marketplace
 
-**URL**: https://lovable.dev/projects/24c4d0ad-210f-4979-a043-749f92420b15
+O **Heroclix Marketplace** é a sua plataforma definitiva para comprar e vender miniaturas de Heroclix. Conecte-se com outros colecionadores, encontre peças raras, e gerencie seus anúncios e vendas de forma eficiente.
 
-## How can I edit this code?
+## 🚀 Recursos Principais
 
-There are several ways of editing your application.
+* **Autenticação de Usuário:** Login e Cadastro com Supabase, incluindo upload de avatar e validação de dados (e-mail, nome de usuário, WhatsApp).
+* **Listagem e Busca de Peças:** Navegação na página inicial com filtro por coleção, busca por nome/coleção, e exibição de cards de unidades com preços mínimo, médio e máximo de mercado.
+* **Carrinho de Compras:** Adicione peças ao carrinho e finalize a compra por vendedor, gerando uma mensagem de checkout via WhatsApp para o vendedor.
+* **Dashboard do Vendedor:**
+    * **Meus Anúncios:** Gerencie, edite preço e quantidade, e exclua seus anúncios.
+    * **Vendas Pendentes:** Visualize, aprove ou rejeite vendas pendentes, agrupadas por comprador, com validação de estoque.
+    * **Histórico de Transações:** Acompanhe todas as compras e vendas processadas (aprovadas ou rejeitadas).
+* **Notificações em Tempo Real:** Campainha de notificação (NotificationBell) que exibe novas compras pendentes e vendas aprovadas, utilizando o Supabase Realtime.
+* **Gerenciamento de Preços de Mercado:** Triggers SQL atualizam automaticamente os valores de preço (mínimo, médio, máximo) na tabela `units` com base nos anúncios ativos (`listings`) e vendas aprovadas (`pending_sales`).
 
-**Use Lovable**
+## 🛠️ Tecnologias Utilizadas
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/24c4d0ad-210f-4979-a043-749f92420b15) and start prompting.
+O projeto foi construído utilizando as seguintes tecnologias:
 
-Changes made via Lovable will be committed automatically to this repo.
+* **Frontend:** [React], [TypeScript], [Vite], [React Router DOM].
+* **Estilização:** [Tailwind CSS], [shadcn-ui], [Class Variance Authority (cva)].
+* **Backend & Banco de Dados:** [Supabase] (PostgreSQL, Auth, Realtime, Storage).
 
-**Use your preferred IDE**
+## 🗃️ Estrutura de Dados (Supabase)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+As tabelas principais do banco de dados são:
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+| Tabela | Descrição |
+| :--- | :--- |
+| `profiles` | Armazena dados dos usuários (username, whatsapp, avatar_url) |
+| `units` | Catálogo de peças de Heroclix (nome, coleção, nº da unidade, preços min/avg/max) |
+| `listings` | Anúncios criados pelos vendedores (preço, quantidade, quantidade disponível) |
+| `cart_items` | Itens temporários que os usuários adicionaram ao carrinho |
+| `pending_sales` | Registros de compras pendentes de aprovação pelo vendedor (status: 'pending', 'approved', 'rejected') |
 
-Follow these steps:
+## ⚙️ Instalação e Configuração Local
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Para rodar o projeto em sua máquina local:
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+1.  **Clone o repositório:**
+    ```bash
+    git clone <YOUR_GIT_URL>
+    cd <YOUR_PROJECT_NAME>
+    ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+2.  **Instale as dependências:**
+    ```bash
+    npm install # ou bun install
+    ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+3.  **Configure o Supabase:**
+    Certifique-se de ter um arquivo `.env` na raiz do projeto com as chaves do Supabase.
+    ```
+    VITE_SUPABASE_PROJECT_ID="irudppcivhjmxdvtosse"
+    VITE_SUPABASE_PUBLISHABLE_KEY="..."
+    VITE_SUPABASE_URL="[https://irudppcivhjmxdvtosse.supabase.co](https://irudppcivhjmxdvtosse.supabase.co)"
+    ```
 
-**Edit a file directly in GitHub**
+4.  **Inicie o servidor de desenvolvimento:**
+    ```bash
+    npm run dev
+    ```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/24c4d0ad-210f-4979-a043-749f92420b15) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+O projeto será iniciado em `http://localhost:8080`.
