@@ -1,4 +1,4 @@
-![Screenshot do Heroclix Marketplace](image_3f3105.jpg)
+![Screenshot do Heroclix Marketplace](./public/printPage.png)
 
 # 🎲 Heroclix Marketplace
 
