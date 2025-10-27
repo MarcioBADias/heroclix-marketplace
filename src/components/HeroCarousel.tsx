@@ -26,6 +26,12 @@ const HeroCarousel = () => {
       >
         <CarouselContent>
           <CarouselItem>
+            <a 
+        href="https://hc-arena.netlify.app/" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="block cursor-pointer transition-transform duration-300 hover:scale-[1.02] hover:shadow-xl rounded-lg ring-4 ring-indigo-300"
+      >
             <div className="relative w-full overflow-hidden rounded-lg">
               <img
                 src={bannerArena}
@@ -33,6 +39,7 @@ const HeroCarousel = () => {
                 className="w-full h-full object-cover"
               />
             </div>
+              </a>
           </CarouselItem>
           <CarouselItem>
             <div className="relative w-full overflow-hidden rounded-lg">
