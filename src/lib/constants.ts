@@ -1,4 +1,5 @@
 export const HC_UNIT_EDITIONS = [
+  { value: 'st', label: 'Strange Tales' },
   { value: 'xm97', label: 'X-men 97' },
   { value: 'll', label: 'Lantern Legacy' },
   { value: 'sd', label: 'Smash Destroy' },
